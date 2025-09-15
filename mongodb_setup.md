@@ -1,3 +1,5 @@
+### MongoDB Installation on EC2 Instance (Amazon Linux 2023)
+
 1. Launch and configure EC2 instance, choose a Linux instance (Amazon Linux 2023) and select a security group that allows inbound SSH access to port 22 and inbound access to the MongoDB port 27017
 
 2. Connect to your EC2 instance using your key pair
@@ -12,12 +14,14 @@
 
 > sudo nano /etc/yum.repos.d/mongodb-org-7.0.repo
 
+```
 [mongodb-org-7.0]
 name=MongoDB Repository
 baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/7.0/x86_64/
 gpgcheck=1
 enabled=1
 gpgkey=https://pgp.mongodb.com/server-7.0.asc
+```
 
 5. Install the MongoDB package using your package manager
 
@@ -30,10 +34,13 @@ gpgkey=https://pgp.mongodb.com/server-7.0.asc
 7. Remove an unnecessary sock file, you may not need to do this step
 
 > sudo rm /tmp/mongodb-27017.sock
+
 > sudo chmod 1777 /tmp
 
 8. Start and enable MongoDB, status should show running
 
 > sudo systemctl start mongod
+
 > sudo systemctl enable mongod
+
 > sudo systemctl status mongod 
