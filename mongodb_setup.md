@@ -27,7 +27,12 @@ gpgkey=https://pgp.mongodb.com/server-7.0.asc
 
 > sudo nano /etc/mongod.conf
 
-7. Start and enable MongoDB, status should show running
+7. Remove an unnecessary sock file, you may not need to do this step
+
+> sudo rm /tmp/mongodb-27017.sock
+> sudo chmod 1777 /tmp
+
+8. Start and enable MongoDB, status should show running
 
 > sudo systemctl start mongod
 > sudo systemctl enable mongod
