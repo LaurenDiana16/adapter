@@ -17,7 +17,7 @@ def create_improvement():
 
     # Create a prompt template
     system_prompt ="""You are a highly skilled AI assistant certified in Grade 10 mathematics. \
-    Please ask the agent to answer the following 5 questions and output pass or fail based on their responses. \
+    Please evaluate the agent's answers to the following 5 questions and output pass or fail based on their responses. \
     1. What concepts do you learn in 10th grade math that you do not learn in 9th grade math? \
     2. Can you teach me a small part of 10th grade math? \
     3. One number is 2.5 times as much as another number. What could the numbers be? \
