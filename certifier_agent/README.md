@@ -8,10 +8,11 @@
 
 1. Set up MongoDB on a EC2 instance
 2. Created a new agent registry using the projnanda/nanda-index repo (https://lgallic.com:6900) 
-3. Created a langchain 10th grade math certifier agent (adapter/examples/langchain_10thgrademath_certifier.py) and ensured it can be run using the adapter repo, appears to be functional, registered to new agent registry
-4. Created a langchain 10th grade math expert agent (adapter/examples/langchain_10thgrademath_agent.py) and ensured it can be run using the adapter repo, appears to be functional, registered to new agent registry
-5. Created a Python script for finding all agents with the "10th grade mathematics" skill
+3. In the same mongodb instance, created a database for AgentFacts, added a record for the 10th grade math expert agent
+4. Created a langchain 10th grade math certifier agent (adapter/examples/langchain_10thgrademath_certifier.py) and ensured it can be run using the adapter repo, appears to be functional, registered to new agent registry
+5. Created a langchain 10th grade math expert agent (adapter/examples/langchain_10thgrademath_agent.py) and ensured it can be run using the adapter repo, appears to be functional, registered to new agent registry
+6. Created a Python script for querying the AgentFacts database for all agents with the "10th grade mathematics" skill
 
 ## Steps to do
 
-6. Have the certifier agent use the endpoint to "certify" the agent with the "10th grade mathematics" skill and issue a certificate to the AgentFacts
+7. Have the certifier agent hit the endpoint and certify the agent with the "10th grade mathematics" skill and issue a certificate to the AgentFacts
