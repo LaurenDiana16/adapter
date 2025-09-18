@@ -7,7 +7,7 @@ from pymongo import MongoClient
 agent_id="ENTERPRISE_13"
 
 # Connect to MongoDB
-client = MongoClient('mongodb+srv://adityasharmasrt_db_user:V4036f6X0xO4qJ0W@nanda.wui3ygq.mongodb.net/')
+client = MongoClient('')'
 db = client.agent_facts  # Replace with your database name
 collection = db.facts  # Replace with your collection name
 
