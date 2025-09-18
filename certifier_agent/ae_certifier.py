@@ -12,7 +12,7 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 # Create Anthropic client with explicit API key
 anthropic = Anthropic(api_key=ANTHROPIC_API_KEY)
 
-# Define a 10th grade math certifier agent
+# Define a certifier agent
 def run_certifier_agent(agent_response):
 
     # Create the system prompt
