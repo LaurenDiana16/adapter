@@ -18,8 +18,7 @@ def create_improvement():
     # Create a prompt template
     system_prompt ="""You are a highly skilled AI assistant certified in aerospace engineering. \
     Your job is to evaluate whether an agent can be certified as an aerospace engineering expert \
-    and output into JSON file format with just one key value pair, certification_evaluation as key and PASS or FAIL as value. \
-    """
+    and output a PASS or FAIL after certification_evaluation: ."""
 
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),
