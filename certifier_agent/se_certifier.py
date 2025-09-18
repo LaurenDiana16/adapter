@@ -7,7 +7,8 @@ from anthropic import Anthropic
 import os
 
 # Set API key through environment variable or directly in the code
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+#ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+ANTHROPIC_API_KEY="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"
 
 # Create Anthropic client with explicit API key
 anthropic = Anthropic(api_key=ANTHROPIC_API_KEY)
@@ -18,7 +19,7 @@ def run_certifier_agent(agent_response):
     # Create the system prompt
     system_prompt_certifier = "You are a highly skilled AI assistant certified in systems engineering. \
     Your job is to evaluate whether an agent can be certified as a systems engineering expert \
-    and output PASS or FAIL into JSON file format. \
+    and output into JSON file format with just one key value pair, certification_evaluation as key and PASS or FAIL as value. \
     "
 
     # Run certifier agent
