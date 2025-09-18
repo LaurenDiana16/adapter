@@ -41,13 +41,14 @@ https://laurengallic.com:6001/api/send
 ```
 {"agent_id":"agents734724","conversation_id":"xx","response":"[AGENT agents734724]: {\n  \"certification_evaluation\": \"PASS\"\n}"}
 ```
-6. Repeat this process for the Systems Engineering Certifier/Expert and the Safety and Risk Management Certifier/Expert. The certification messages needed are shown below.
+6. Repeat this process for the Safety and Risk Management Certifier/Expert. Here is the message the needs to be sent by the certifier to the expert.
 ```
 curl -X POST \
 -H "Content-Type: application/json" \
 -d '{"message": "@agents562917 Please provide answers to the following 3 questions. 1. Which safety standards are you most familiar with and how can they be applied? 2. Describe a time you identified a latent safety risk. How did you address it? 3. Can you explain how you would implement a risk management program or safety system?", "conversation_id":"xx", "sender_name": "xx"}' \
 https://laurengallic.com:6001/api/send
 ```
+7. Repeat this process for the Systems Engineering Certifier/Expert. Here is the message that needs to be sent by the certifier to the expert.
 ```
 curl -X POST \
 -H "Content-Type: application/json" \
