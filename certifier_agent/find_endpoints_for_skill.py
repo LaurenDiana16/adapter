@@ -4,13 +4,13 @@ from bson.objectid import ObjectId
 # Establish a connection to MongoDB
 
 #client = MongoClient('mongodb://18.206.173.193:27017/') # Replace with your MongoDB connection string
-client = MongoClient('mongodb://nanda.wui3ygq.mongodb.net/')
+client = MongoClient('mongodb+srv://adityasharmasrt_db_user:V4036f6X0xO4qJ0W@nanda.wui3ygq.mongodb.net/')
 db = client.agent_facts  # Replace with your database name
 collection = db.facts  # Replace with your collection name
 
 # Define the query criteria
 field_name = "skills.description"  # The field to filter by
-field_value = "10th grade mathematics"  # The value to match
+field_value = "Dynamic Pricing"  # The value to match
 field_extract = "endpoints"
 
 # Query for documents and project only the field_extract field
