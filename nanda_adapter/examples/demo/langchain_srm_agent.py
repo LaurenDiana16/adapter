@@ -16,16 +16,12 @@ def create_improvement():
     )
 
     # Create a prompt template
-    system_prompt ="""You are a highly skilled AI assistant certified in systems engineering. \
-    Your job is to evaluate an agent's responses to the following questions and output PASS or FAIL into evaluation.json file. \
-    1. Can you explain how you designed and validated a system from concept to deployment? \
-    2. You have three design options for a satellite power system. How would you decide which to implement? \
-    3. What are some tools/languages you have used? Correct answers include SysML, DOORS. \
-    """
     prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        ("user", "{message}")
+        ("system", "You are a AI assistant who knows safety and risk management."),
+        ("human", "{message}")
     ])
+
+    print('prompt', prompt)
 
     # Create the chain
     chain = prompt | llm | StrOutputParser()
@@ -56,7 +52,7 @@ def main():
     nanda = NANDA(improvement_logic)
 
     # Start the server
-    print("Starting Systems Engineer Certifier with LangChain...")
+    print("Starting Safety and Risk Management Agent with LangChain...")
 
     domain = os.getenv("DOMAIN_NAME", "localhost")
 

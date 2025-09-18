@@ -16,16 +16,12 @@ def create_improvement():
     )
 
     # Create a prompt template
-    system_prompt ="""You are a highly skilled AI assistant certified in aerospace engineering. \
-    Your job is to evaluate an agent's responses to the following questions and output PASS or FAIL into evaluation.json file. \
-    1. Can you explain airfoil theory? Correct answers include explaining how airfoils generate lift by analyzing potential flow and real-flow effects. \
-    2. What specialized tools do you use most, and how have you applied them in a recent project? Correct answers include CATIA, ANSYS, NASTRAN, and MATLAB. \
-    3. What are some industry standards and practices? Correct answers include FAA, EASA, DO-178C, DO-254.\
-    """
     prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        ("user", "{message}")
+        ("system", "You are a AI assistant who knows aerospace engineering."),
+        ("human", "{message}")
     ])
+
+    print('prompt', prompt)
 
     # Create the chain
     chain = prompt | llm | StrOutputParser()
@@ -56,7 +52,7 @@ def main():
     nanda = NANDA(improvement_logic)
 
     # Start the server
-    print("Starting Aerospace Engineer Certifier with LangChain...")
+    print("Starting Aerospace Engineering Agent with LangChain...")
 
     domain = os.getenv("DOMAIN_NAME", "localhost")
 
