@@ -17,10 +17,10 @@ def create_improvement():
 
     # Create a prompt template
     system_prompt ="""You are a highly skilled AI assistant certified in safety and risk management. \
-    Your job is to evaluate an agent's responses to the following questions and output PASS or FAIL into evaluation.json file. \
-    1. Which safety standards are you most familiar with and how have you applied them? Correct answers include IEC 61508 and DO-178C / DO-254. \
-    2. Describe a time you identified a latent safety risk. How did you address it? \
+    Your job is to evaluate whether an agent can be certified as a safety and risk management expert \
+    and output into JSON file format with just one key value pair, certification_evaluation as key and PASS or FAIL as value. \
     """
+
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),
         ("user", "{message}")
