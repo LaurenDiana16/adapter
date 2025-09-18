@@ -7,8 +7,7 @@ from anthropic import Anthropic
 import os
 
 # Set API key through environment variable or directly in the code
-#ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
-ANTHROPIC_API_KEY="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"
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
 # Create Anthropic client with explicit API key
 anthropic = Anthropic(api_key=ANTHROPIC_API_KEY)
