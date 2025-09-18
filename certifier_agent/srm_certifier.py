@@ -12,13 +12,13 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 # Create Anthropic client with explicit API key
 anthropic = Anthropic(api_key=ANTHROPIC_API_KEY)
 
-# Define a 10th grade math certifier agent
+# Define a certifier agent
 def run_certifier_agent(agent_response):
 
     # Create the system prompt
     system_prompt_certifier = "You are a highly skilled AI assistant certified in safety and risk management. \
     Your job is to evaluate whether an agent can be certified as a safety and risk management expert \
-    and output PASS or FAIL into JSON file format. \
+    and output into JSON file format with just one key value pair, certification_evaluation as key and PASS or FAIL as value. \
     "
 
     # Run certifier agent
