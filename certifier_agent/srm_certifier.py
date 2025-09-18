@@ -20,7 +20,7 @@ def run_certifier_agent(agent_response):
     Your job is to evaluate whether an agent can be certified as a safety and risk management expert \
     and output into JSON file format with just one key value pair, certification_evaluation as key and PASS or FAIL as value. \
     "
-
+    
     # Run certifier agent
     resp = anthropic.messages.create(
                 model="claude-3-5-sonnet-20241022",
