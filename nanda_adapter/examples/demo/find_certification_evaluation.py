@@ -65,12 +65,7 @@ def main(file_path, skill):
 
     return
 
-file_path = sys.argv[1]
-skill = sys.argv[2]
-data_list = load_file(file_path)
-agents = find_certified_agents(data_list, skill)
 if __name__ == "__main__":
     file_path = sys.argv[1]
     skill = sys.argv[2]
     main(file_path, skill)
-
