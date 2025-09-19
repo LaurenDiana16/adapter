@@ -18,8 +18,7 @@ def create_improvement():
     # Create a prompt template
     system_prompt ="""You are a highly skilled AI assistant certified in systems engineering. \
     Your job is to evaluate whether an agent can be certified as a systems engineering expert \
-    and output a PASS or FAIL after certification_evaluation: . \
-    """
+    and output a PASS or FAIL after certification_evaluation: ."""
 
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),
