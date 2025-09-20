@@ -1,8 +1,8 @@
-# Import packages
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from pymongo import MongoClient
 import json
+import sys
 
 def update_agent_facts(agent_name):
     """Function that adds a certification to a AgentFacts record in the MongoDB database."""
@@ -42,11 +42,16 @@ def load_file(file_path):
 
     return data_list
 
+def main(file_path):
+    """Load in the newly certified agents information and update the AgentFacts records in the MongoDB database."""
 
-# Load in certifications JSON file
-file_path = "certifications.jsonl"
-data_list = load_file(file_path)
+    # Load in certifications JSON file
+    data_list = load_file(file_path)
 
-# Update each agent
-for item in data_list:
-    update_agent_facts(item['agent_name'])
+    # Update each agent
+    for item in data_list:
+        update_agent_facts(item['agent_name'])
+
+if __name__ == "__main__":
+    file_path = sys.argv[1]
+    main(file_path)
