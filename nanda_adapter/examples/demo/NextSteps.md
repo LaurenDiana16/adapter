@@ -3,8 +3,8 @@
 1. Choose a framework (e.g. langchain): DONE
 2. Define the LLM: DONE
 3. Create and define tools
-    1. Identify the specific data and functionalities required for the certification: TO DO
-    2. Implement these as functions and provide a clear doctoring for each to explain its purpose: TO DO
+    1. Identify the specific data and functionalities required for the certification. Ideally this would be a specialized NASA dataset but for demo purposes we could build a RAG over an open source NASA dataset and use this to ask questions of the expert.
+    2. Implement these as functions and provide a clear doctoring for each to explain its purpose
 4. Implement the agent core:
     1. Use the framework’s functions to build the agent, combining the LLM, tools and prompt to guide its behavior: TO DO
 5. Integrate memory: Add a memory component to allow the agent to store and recall conversation history: TO DO
