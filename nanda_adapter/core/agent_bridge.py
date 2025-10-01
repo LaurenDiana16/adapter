@@ -357,7 +357,7 @@ def send_to_agent(target_agent_id, message_text, conversation_id, metadata=None)
         return f"Error sending message to {target_agent_id}: {e}"
 
 
-def (requested_registry: str, qualified_name: str) -> Optional[str]:
+def get_mcp_server_url(requested_registry: str, qualified_name: str) -> Optional[str]:
     """
     Query registry endpoint to find MCP server URL based on qualifiedName.
     
