@@ -1,5 +1,6 @@
 # agent_bridge.py
 import os
+from re import L
 import uuid
 import traceback
 import json
@@ -356,7 +357,7 @@ def send_to_agent(target_agent_id, message_text, conversation_id, metadata=None)
         return f"Error sending message to {target_agent_id}: {e}"
 
 
-def get_mcp_server_url(requested_registry: str, qualified_name: str) -> Optional[str]:
+def (requested_registry: str, qualified_name: str) -> Optional[str]:
     """
     Query registry endpoint to find MCP server URL based on qualifiedName.
     
@@ -773,7 +774,7 @@ class AgentBridge(A2AServer):
                         parent_message_id=msg.message_id,
                         conversation_id=conversation_id
                     )
-                    
+                
                 else:
                     # Invalid # command format
                     return Message(
@@ -782,7 +783,7 @@ class AgentBridge(A2AServer):
                         parent_message_id=msg.message_id,
                         conversation_id=conversation_id
                     )
-            
+    
             # Check if this is a command (starts with /)
             elif user_text.startswith("/"):
                 # Parse the command
@@ -812,6 +813,47 @@ class AgentBridge(A2AServer):
                         parent_message_id = msg.message_id,
                         conversation_id = conversation_id
                     )
+
+                elif command == "certify":
+                    # Replace this to call to a mongodb database that has key/value pairs
+                    # Call Claude with the query
+                    query_text = "Please provide answers to the following 3 questions. \
+                    1. Can you explain airfoil theory? \
+                    2. What specialized tools are being used in the field right now? \
+                    3. What are some industry standards and practices? \
+                    "
+                    claude_response_expert = call_claude(query_text, additional_context, conversation_id, current_path,
+                    "You are a AI assistant who knows aerospace engineering.")
+                    print('claude_response_expert', claude_response_expert)
+
+                    # Call Claude with the query
+                    claude_response = call_claude(claude_response_expert, additional_context, conversation_id, current_path,
+                    "You are a highly skilled AI assistant certified in aerospace engineering. \
+                    Your job is to evaluate whether an agent can be certified as an aerospace engineering expert \
+                    and output into JSON file format with just one key value pair, certification_evaluation as key and PASS or FAIL as value. \
+                    ")
+                    print('claude_response', claude_response)
+
+                    # Make sure we have a valid response
+                    if not claude_response:
+                        print("Warning: Claude returned empty response")
+                        claude_response = "Sorry, I couldn't process your query. Please try again."
+                    else:
+                        print(f"Claude response received ({len(claude_response)} chars)")
+                        print(f"Response preview: {claude_response[:50]}...")
+
+                    # Format and return the response
+                    formatted_response = f"[AGENT {agent_id}] {claude_response}"
+                    
+                    # Return to local terminal
+                    response_message = Message(
+                        role = MessageRole.AGENT,
+                        content = TextContent(text=formatted_response),
+                        parent_message_id = msg.message_id,
+                        conversation_id = conversation_id
+                    )
+
+                    return response_message
                 
                 elif command == "query":
                     # Process query command - this is for local assistance
@@ -821,7 +863,7 @@ class AgentBridge(A2AServer):
 
                         # Call Claude with the query
                         claude_response = call_claude(query_text, additional_context, conversation_id, current_path,
-                            "You are Claude, an AI assistant. Provide a direct, helpful response to the user's question. Treat it as a private request for guidance and respond only to the user.")
+                        "You are Claude, an AI assistant. Provide a direct, helpful response to the user's question. Treat it as a private request for guidance and respond only to the user.")
                         
                         # Make sure we have a valid response
                         if not claude_response:
@@ -843,6 +885,7 @@ class AgentBridge(A2AServer):
                         )
 
                         return response_message
+
                     else:
                         # No query text provided
                         return Message(
