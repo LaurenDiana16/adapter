@@ -816,7 +816,8 @@ class AgentBridge(A2AServer):
 
                 elif command == "certify":
                     # Get the target agent to certify
-                    target_agent = parts[1]
+                    parts = user_text.split(" ", 1)
+                    target_agent = parts[1][1:]
 
                     # Use the skill to look up the test prompt and certifier prompt
                     skill = parts[2]
