@@ -815,24 +815,31 @@ class AgentBridge(A2AServer):
                     )
 
                 elif command == "certify":
-                    # Replace this to call to a mongodb database that has key/value pairs
-                    # Call Claude with the query
-                    query_text = "Please provide answers to the following 3 questions. \
+                    # Get the target agent to certify
+                    target_agent = parts[1]
+
+                    # Use the skill to look up the test prompt and certifier prompt
+                    skill = parts[2]
+
+                    # Test prompt
+                    message_text = "Please provide answers to the following 3 questions. \
                     1. Can you explain airfoil theory? \
                     2. What specialized tools are being used in the field right now? \
                     3. What are some industry standards and practices? \
                     "
-                    claude_response_expert = call_claude(query_text, additional_context, conversation_id, current_path,
-                    "You are a AI assistant who knows aerospace engineering.")
-                    print('claude_response_expert', claude_response_expert)
 
-                    # Call Claude with the query
-                    claude_response = call_claude(claude_response_expert, additional_context, conversation_id, current_path,
+                    # Send the test prompt to target agent
+                    result = send_to_agent(target_agent, message_text, conversation_id, {
+                        'path': current_path,
+                        'source_agent': agent_id
+                    })
+
+                    # Send target agent's response to certifier agent
+                    claude_response = call_claude(result, additional_context, conversation_id, current_path,
                     "You are a highly skilled AI assistant certified in aerospace engineering. \
                     Your job is to evaluate whether an agent can be certified as an aerospace engineering expert \
                     and output into JSON file format with just one key value pair, certification_evaluation as key and PASS or FAIL as value. \
                     ")
-                    print('claude_response', claude_response)
 
                     # Make sure we have a valid response
                     if not claude_response:
