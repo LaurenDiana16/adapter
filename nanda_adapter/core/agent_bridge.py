@@ -816,7 +816,7 @@ class AgentBridge(A2AServer):
 
                 elif command == "certify":
                     # Get the target agent to certify
-                    parts = user_text.split(" ", 1)
+                    parts = user_text.split(" ")
                     target_agent = parts[1][1:]
 
                     # Use the skill to look up the test prompt and certifier prompt
@@ -834,6 +834,8 @@ class AgentBridge(A2AServer):
                         'path': current_path,
                         'source_agent': agent_id
                     })
+
+                    #result = "hi"
 
                     # Send target agent's response to certifier agent
                     claude_response = call_claude(result, additional_context, conversation_id, current_path,
