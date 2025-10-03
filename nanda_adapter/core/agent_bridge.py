@@ -507,19 +507,19 @@ def handle_external_message(msg_text, conversation_id, msg, current_path):
         print("UI MODE: ", UI_MODE)
 
         # Instead of displaying formatted_text forward the text to claude
-        reply = call_claude(message_content, "", conversation_id, current_path)
+        #reply = call_claude(message_content, "", conversation_id, current_path)
 
         # If in UI mode, forward to all registered UI clients
         if UI_MODE:
             print(f"Forwarding message to UI client")
             send_to_ui_client(formatted_text, from_agent, conversation_id)
-            send_to_ui_client(reply, from_agent, conversation_id)
+            #send_to_ui_client(reply, from_agent, conversation_id)
             
             # Acknowledge receipt to sender
             agent_id = get_agent_id()
             return Message(
                 role=MessageRole.AGENT,
-                content=TextContent(text=reply),
+                content=TextContent(text=formatted_text),
                 parent_message_id=msg.message_id,
                 conversation_id=conversation_id
             )
@@ -530,7 +530,7 @@ def handle_external_message(msg_text, conversation_id, msg, current_path):
                 terminal_client.send_message_threaded(
                     Message(
                         role=MessageRole.USER,
-                        content=TextContent(text=reply),
+                        content=TextContent(text=formatted_text),
                         conversation_id=conversation_id,
                         metadata=Metadata(custom_fields={
                             'is_from_peer': True,
@@ -545,7 +545,7 @@ def handle_external_message(msg_text, conversation_id, msg, current_path):
                 agent_id = get_agent_id()
                 return Message(
                     role=MessageRole.AGENT,
-                    content=TextContent(text=reply),
+                    content=TextContent(text=formatted_text),
                     parent_message_id=msg.message_id,
                     conversation_id=conversation_id
                 )
