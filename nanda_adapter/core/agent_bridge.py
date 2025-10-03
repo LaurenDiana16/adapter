@@ -466,7 +466,7 @@ if not hasattr(A2AClient, 'send_message_threaded'):
 
 
 # Update handle_message to detect this special format
-def handle_external_message(msg_text, conversation_id, msg):
+def handle_external_message(msg_text, conversation_id, msg, current_path):
     """Handle specially formatted external messages"""
     try:
         # Parse the special message format
@@ -506,16 +506,20 @@ def handle_external_message(msg_text, conversation_id, msg):
         print("Message Text: ", message_content)
         print("UI MODE: ", UI_MODE)
 
+        # Instead of displaying formatted_text forward the text to claude
+        reply = call_claude(message_content, "", conversation_id, current_path)
+
         # If in UI mode, forward to all registered UI clients
         if UI_MODE:
             print(f"Forwarding message to UI client")
             send_to_ui_client(formatted_text, from_agent, conversation_id)
+            send_to_ui_client(reply, from_agent, conversation_id)
             
             # Acknowledge receipt to sender
             agent_id = get_agent_id()
             return Message(
                 role=MessageRole.AGENT,
-                content=TextContent(text=f"Message received by Agent {agent_id}"),
+                content=TextContent(text=reply),
                 parent_message_id=msg.message_id,
                 conversation_id=conversation_id
             )
@@ -526,7 +530,7 @@ def handle_external_message(msg_text, conversation_id, msg):
                 terminal_client.send_message_threaded(
                     Message(
                         role=MessageRole.USER,
-                        content=TextContent(text=formatted_text),
+                        content=TextContent(text=reply),
                         conversation_id=conversation_id,
                         metadata=Metadata(custom_fields={
                             'is_from_peer': True,
@@ -541,7 +545,7 @@ def handle_external_message(msg_text, conversation_id, msg):
                 agent_id = get_agent_id()
                 return Message(
                     role=MessageRole.AGENT,
-                    content=TextContent(text=f"Message received by Agent {agent_id}"),
+                    content=TextContent(text=reply),
                     parent_message_id=msg.message_id,
                     conversation_id=conversation_id
                 )
@@ -684,7 +688,18 @@ class AgentBridge(A2AServer):
         
         if user_text.startswith('__EXTERNAL_MESSAGE__'):
             print("--- External Message Detected ---")
-            external_response = handle_external_message(user_text, conversation_id, msg)
+            #try:
+            #    body = user_text.split('__MESSAGE_START__\n', 1)[1].rsplit('\n__MESSAGE_END__', 1)[0]
+            #except Exception:
+            #    body = ""
+            #reply = call_claude(body, "", conversation_id, current_path) or "(emply reply)"
+            #return Message(
+            #    role=MessageRole.AGENT,
+            #    content=TextContent(text=reply),
+            #    parent_message_id=msg.message_id,
+            #    conversation_id=conversation_id
+            #)
+            external_response = handle_external_message(user_text, conversation_id, msg, current_path)
             if external_response:
                 return external_response
         
