@@ -83,7 +83,7 @@ def register_with_registry(agent_id, agent_url, api_url):
     try:
         # Add /a2a to the URL during registration
         if not agent_url.endswith('/a2a'):
-            agent_url = f"{agent_url}"
+            agent_url = f"{agent_url}/a2a"
 
         data = {
             "agent_id": agent_id,
@@ -350,8 +350,18 @@ def send_to_agent(target_agent_id, message_text, conversation_id, metadata=None)
                 metadata=Metadata(custom_fields=send_metadata) if send_metadata else None
             )
         )
+
+        # Return actual response
+        if response and hasattr(response, 'content') and response.content:
+            if hasattr(response.content, 'text'):
+                return f"[{target_agent_id} → {agent_id}] {response.content.text}"
+            else:
+                return f"[{target_agent_id} → {agent_id}] {str(response.content)}"
+        else:
+            return f"[{agent_id}] Message sent to {target_agent_id} (no response)"
         
-        return f"Message sent to {target_agent_id}"
+        
+        #return f"Message sent to {target_agent_id}"
     except Exception as e:
         print(f"Error sending message to {target_agent_id}: {e}")
         return f"Error sending message to {target_agent_id}: {e}"
@@ -834,14 +844,14 @@ class AgentBridge(A2AServer):
                         'path': current_path,
                         'source_agent': agent_id
                     })
-
+                    print(result)
                     #result = "hi"
 
                     # Send target agent's response to certifier agent
                     claude_response = call_claude(result, additional_context, conversation_id, current_path,
                     "You are a highly skilled AI assistant certified in aerospace engineering. \
                     Your job is to evaluate whether an agent can be certified as an aerospace engineering expert \
-                    and output into JSON file format with just one key value pair, certification_evaluation as key and PASS or FAIL as value. \
+                    and output a PASS or FAIL.\
                     ")
 
                     # Make sure we have a valid response
@@ -858,7 +868,8 @@ class AgentBridge(A2AServer):
                     # Return to local terminal
                     response_message = Message(
                         role = MessageRole.AGENT,
-                        content = TextContent(text=formatted_response),
+                        content = TextContent(text=result),
+                        #content = TextContent(text=formatted_response),
                         parent_message_id = msg.message_id,
                         conversation_id = conversation_id
                     )
