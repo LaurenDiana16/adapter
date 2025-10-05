@@ -685,7 +685,7 @@ class AgentBridge(A2AServer):
                 parent_message_id = msg.message_id,
                 conversation_id = conversation_id
             )
-        
+
         if user_text.startswith('__EXTERNAL_MESSAGE__'):
             print("--- External Message Detected ---")
             try:
@@ -693,11 +693,11 @@ class AgentBridge(A2AServer):
             except Exception:
                 body = ""
             reply = call_claude(body, "", conversation_id, current_path) or "(emply reply)"
-            send_to_agent(agent_id, reply, conversation_id, {
+            send_to_agent(source_agent, reply, conversation_id, {
                         'path': current_path,
                         'source_agent': agent_id
                     })
-
+            
             return Message(
                 role=MessageRole.AGENT,
                 content=TextContent(text=reply),
