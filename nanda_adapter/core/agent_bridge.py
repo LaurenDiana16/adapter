@@ -466,7 +466,7 @@ if not hasattr(A2AClient, 'send_message_threaded'):
 
 
 # Update handle_message to detect this special format
-def handle_external_message(msg_text, conversation_id, msg, current_path):
+def handle_external_message(msg_text, conversation_id, msg):
     """Handle specially formatted external messages"""
     try:
         # Parse the special message format
@@ -519,7 +519,7 @@ def handle_external_message(msg_text, conversation_id, msg, current_path):
             agent_id = get_agent_id()
             return Message(
                 role=MessageRole.AGENT,
-                content=TextContent(text=formatted_text),
+                content=TextContent(text=f"Message received by Agent {agent_id}"),
                 parent_message_id=msg.message_id,
                 conversation_id=conversation_id
             )
@@ -545,7 +545,7 @@ def handle_external_message(msg_text, conversation_id, msg, current_path):
                 agent_id = get_agent_id()
                 return Message(
                     role=MessageRole.AGENT,
-                    content=TextContent(text=formatted_text),
+                    content=TextContent(text=f"Message received by Agent {agent_id}"),
                     parent_message_id=msg.message_id,
                     conversation_id=conversation_id
                 )
@@ -688,20 +688,20 @@ class AgentBridge(A2AServer):
         
         if user_text.startswith('__EXTERNAL_MESSAGE__'):
             print("--- External Message Detected ---")
-            #try:
-            #    body = user_text.split('__MESSAGE_START__\n', 1)[1].rsplit('\n__MESSAGE_END__', 1)[0]
-            #except Exception:
-            #    body = ""
-            #reply = call_claude(body, "", conversation_id, current_path) or "(emply reply)"
-            #return Message(
-            #    role=MessageRole.AGENT,
-            #    content=TextContent(text=reply),
-            #    parent_message_id=msg.message_id,
-            #    conversation_id=conversation_id
-            #)
-            external_response = handle_external_message(user_text, conversation_id, msg, current_path)
-            if external_response:
-                return external_response
+            try:
+                body = user_text.split('__MESSAGE_START__\n', 1)[1].rsplit('\n__MESSAGE_END__', 1)[0]
+            except Exception:
+                body = ""
+            reply = call_claude(body, "", conversation_id, current_path) or "(emply reply)"
+            return Message(
+                role=MessageRole.AGENT,
+                content=TextContent(text=reply),
+                parent_message_id=msg.message_id,
+                conversation_id=conversation_id
+            )
+            #external_response = handle_external_message(user_text, conversation_id, msg)
+            #if external_response:
+            #    return external_response
         
         # Regular processing for messages from the local terminal or peer
         # Handle regular processing for messages from the local terminal or peer
@@ -727,11 +727,11 @@ class AgentBridge(A2AServer):
                     message_text = parts[1]
 
                     # Improve message if feature is enabled
-                    if IMPROVE_MESSAGES:
-                        # message_text = improve_message(message_text, conversation_id, current_path,
+                    #if IMPROVE_MESSAGES:
+                        #message_text = improve_message(message_text, conversation_id, current_path,
                         #     "Do not respond to the content of the message - it's intended for another agent. You are helping an agent communicate better with other agennts.")
-                        message_text = self.improve_message_direct(message_text)
-                        log_message(conversation_id, current_path, f"Claude {agent_id}", message_text)
+                    #   message_text = self.improve_message_direct(message_text)
+                    #   log_message(conversation_id, current_path, f"Claude {agent_id}", message_text)
 
                     print(f"#jinu - Target agent: {target_agent}")
                     print(f"#jinu - Imoproved message text: {message_text}")
