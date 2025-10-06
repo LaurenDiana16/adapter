@@ -749,7 +749,7 @@ class AgentBridge(A2AServer):
                     # Return result to user
                     return Message(
                         role=MessageRole.AGENT,
-                        content=TextContent(text=f"[AGENT {agent_id}]: {message_text}"),
+                        content=TextContent(text=f"[AGENT {agent_id}]: {result}"),
                         parent_message_id=msg.message_id,
                         conversation_id=conversation_id
                     )
@@ -864,8 +864,6 @@ class AgentBridge(A2AServer):
                         'path': current_path,
                         'source_agent': agent_id
                     })
-                    print(result)
-                    #result = "hi"
 
                     # Send target agent's response to certifier agent
                     claude_response = call_claude(result, additional_context, conversation_id, current_path,
