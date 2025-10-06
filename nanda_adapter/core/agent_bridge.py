@@ -704,7 +704,7 @@ class AgentBridge(A2AServer):
             #    parent_message_id=msg.message_id,
             #    conversation_id=conversation_id
             #)
-            external_response = handle_external_message(user_text, conversation_id, msg)
+            external_response = handle_external_message(user_text, conversation_id, msg, current_path)
             if external_response:
                 return external_response
         
