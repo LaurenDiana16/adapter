@@ -693,10 +693,10 @@ class AgentBridge(A2AServer):
             except Exception:
                 body = ""
             reply = call_claude(body, "", conversation_id, current_path) or "(emply reply)"
-            send_to_agent(from_agent, reply, conversation_id, {
-                        'path': current_path,
-                        'source_agent': from_agent
-                    })
+            #send_to_agent(from_agent, reply, conversation_id, {
+            #            'path': current_path,
+            #            'source_agent': from_agent
+            #        })
             
             return Message(
                 role=MessageRole.AGENT,
