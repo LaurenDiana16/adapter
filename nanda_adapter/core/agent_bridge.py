@@ -466,7 +466,7 @@ if not hasattr(A2AClient, 'send_message_threaded'):
 
 
 # Update handle_message to detect this special format
-def handle_external_message(msg_text, conversation_id, msg):
+def handle_external_message(msg_text, conversation_id, msg, current_path):
     """Handle specially formatted external messages"""
     try:
         # Parse the special message format
@@ -498,6 +498,8 @@ def handle_external_message(msg_text, conversation_id, msg):
         # Trim trailing newline
         message_content = message_content.rstrip()
         
+        # NEW LINE
+        message_content = call_claude(message_content, "", conversation_id, current_path) or "(emply reply)"
         print(f"Received external message from {from_agent} to {to_agent}")
         
         # Format the message for display in terminal
@@ -505,9 +507,6 @@ def handle_external_message(msg_text, conversation_id, msg):
         
         print("Message Text: ", message_content)
         print("UI MODE: ", UI_MODE)
-
-        # Instead of displaying formatted_text forward the text to claude
-        #reply = call_claude(message_content, "", conversation_id, current_path)
 
         # If in UI mode, forward to all registered UI clients
         if UI_MODE:
@@ -688,25 +687,26 @@ class AgentBridge(A2AServer):
 
         if user_text.startswith('__EXTERNAL_MESSAGE__'):
             print("--- External Message Detected ---")
-            try:
-                body = user_text.split('__MESSAGE_START__\n', 1)[1].rsplit('\n__MESSAGE_END__', 1)[0]
-            except Exception:
-                body = ""
-            reply = call_claude(body, "", conversation_id, current_path) or "(emply reply)"
+            #try:
+            #    body = user_text.split('__MESSAGE_START__\n', 1)[1].rsplit('\n__MESSAGE_END__', 1)[0]
+            #except Exception:
+            #    body = ""
+            #reply = call_claude(body, "", conversation_id, current_path) or "(emply reply)"
+            # HAVE TO PREVENT INFINITE LOOP
             #send_to_agent(from_agent, reply, conversation_id, {
             #            'path': current_path,
             #            'source_agent': from_agent
             #        })
             
-            return Message(
-                role=MessageRole.AGENT,
-                content=TextContent(text=reply),
-                parent_message_id=msg.message_id,
-                conversation_id=conversation_id
-            )
-            #external_response = handle_external_message(user_text, conversation_id, msg)
-            #if external_response:
-            #    return external_response
+            #return Message(
+            #    role=MessageRole.AGENT,
+            #    content=TextContent(text=reply),
+            #    parent_message_id=msg.message_id,
+            #    conversation_id=conversation_id
+            #)
+            external_response = handle_external_message(user_text, conversation_id, msg)
+            if external_response:
+                return external_response
         
         # Regular processing for messages from the local terminal or peer
         # Handle regular processing for messages from the local terminal or peer
