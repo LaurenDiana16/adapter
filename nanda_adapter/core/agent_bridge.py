@@ -886,8 +886,8 @@ class AgentBridge(A2AServer):
                     # Return to local terminal
                     response_message = Message(
                         role = MessageRole.AGENT,
-                        content = TextContent(text=result),
-                        #content = TextContent(text=formatted_response),
+                        #content = TextContent(text=result),
+                        content = TextContent(text=formatted_response),
                         parent_message_id = msg.message_id,
                         conversation_id = conversation_id
                     )
