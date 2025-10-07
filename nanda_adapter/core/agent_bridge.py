@@ -518,7 +518,7 @@ def handle_external_message(msg_text, conversation_id, msg, current_path):
             agent_id = get_agent_id()
             return Message(
                 role=MessageRole.AGENT,
-                content=TextContent(text=f"Message received by Agent {agent_id}"),
+                content=TextContent(text=formatted_text),
                 parent_message_id=msg.message_id,
                 conversation_id=conversation_id
             )
