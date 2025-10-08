@@ -466,7 +466,7 @@ if not hasattr(A2AClient, 'send_message_threaded'):
 
 
 # Update handle_message to detect this special format
-def handle_external_message(msg_text, conversation_id, msg, current_path):
+def handle_external_message(msg_text, conversation_id, msg, current_path, system_prompt):
     """Handle specially formatted external messages"""
     try:
         # Parse the special message format
@@ -499,7 +499,9 @@ def handle_external_message(msg_text, conversation_id, msg, current_path):
         message_content = message_content.rstrip()
         
         # Instead of returning the message_content back to the user call_claude with the message_content
-        message_content = call_claude(message_content, "", conversation_id, current_path) or "(emply reply)"
+        message_content = self.improve_message_direct(message_content)
+        log_message(conversation_id, current_path, f"Claude {agent_id}", message_content)
+        #message_content = call_claude(message_content, "", conversation_id, current_path, system_prompt) or "(emply reply)"
         
         print(f"Received external message from {from_agent} to {to_agent}")
         
@@ -687,7 +689,7 @@ class AgentBridge(A2AServer):
 
         if user_text.startswith('__EXTERNAL_MESSAGE__'):
             print("--- External Message Detected ---")
-            external_response = handle_external_message(user_text, conversation_id, msg, current_path)
+            external_response = handle_external_message(user_text, conversation_id, msg, current_path, system_prompt)
             if external_response:
                 return external_response
         
@@ -715,11 +717,11 @@ class AgentBridge(A2AServer):
                     message_text = parts[1]
 
                     # Improve message if feature is enabled
-                    if IMPROVE_MESSAGES:
+                    #if IMPROVE_MESSAGES:
                         #message_text = improve_message(message_text, conversation_id, current_path,
                         #     "Do not respond to the content of the message - it's intended for another agent. You are helping an agent communicate better with other agennts.")
-                        message_text = self.improve_message_direct(message_text)
-                        log_message(conversation_id, current_path, f"Claude {agent_id}", message_text)
+                     #   message_text = self.improve_message_direct(message_text)
+                     #   log_message(conversation_id, current_path, f"Claude {agent_id}", message_text)
 
                     print(f"#jinu - Target agent: {target_agent}")
                     print(f"#jinu - Imoproved message text: {message_text}")
