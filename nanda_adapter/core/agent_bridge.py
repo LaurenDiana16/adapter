@@ -715,11 +715,11 @@ class AgentBridge(A2AServer):
                     message_text = parts[1]
 
                     # Improve message if feature is enabled
-                    #if IMPROVE_MESSAGES:
+                    if IMPROVE_MESSAGES:
                         #message_text = improve_message(message_text, conversation_id, current_path,
                         #     "Do not respond to the content of the message - it's intended for another agent. You are helping an agent communicate better with other agennts.")
-                    #   message_text = self.improve_message_direct(message_text)
-                    #   log_message(conversation_id, current_path, f"Claude {agent_id}", message_text)
+                        message_text = self.improve_message_direct(message_text)
+                        log_message(conversation_id, current_path, f"Claude {agent_id}", message_text)
 
                     print(f"#jinu - Target agent: {target_agent}")
                     print(f"#jinu - Imoproved message text: {message_text}")
