@@ -498,8 +498,9 @@ def handle_external_message(msg_text, conversation_id, msg, current_path):
         # Trim trailing newline
         message_content = message_content.rstrip()
         
-        # NEW LINE
+        # Instead of returning the message_content back to the user call_claude with the message_content
         message_content = call_claude(message_content, "", conversation_id, current_path) or "(emply reply)"
+        
         print(f"Received external message from {from_agent} to {to_agent}")
         
         # Format the message for display in terminal
@@ -512,9 +513,8 @@ def handle_external_message(msg_text, conversation_id, msg, current_path):
         if UI_MODE:
             print(f"Forwarding message to UI client")
             send_to_ui_client(formatted_text, from_agent, conversation_id)
-            #send_to_ui_client(reply, from_agent, conversation_id)
             
-            # Acknowledge receipt to sender
+            # Return claude's response
             agent_id = get_agent_id()
             return Message(
                 role=MessageRole.AGENT,
@@ -540,7 +540,7 @@ def handle_external_message(msg_text, conversation_id, msg, current_path):
                     )
                 )
                 
-                # Acknowledge receipt to sender
+                # Return claude's response
                 agent_id = get_agent_id()
                 return Message(
                     role=MessageRole.AGENT,
@@ -687,23 +687,6 @@ class AgentBridge(A2AServer):
 
         if user_text.startswith('__EXTERNAL_MESSAGE__'):
             print("--- External Message Detected ---")
-            #try:
-            #    body = user_text.split('__MESSAGE_START__\n', 1)[1].rsplit('\n__MESSAGE_END__', 1)[0]
-            #except Exception:
-            #    body = ""
-            #reply = call_claude(body, "", conversation_id, current_path) or "(emply reply)"
-            # HAVE TO PREVENT INFINITE LOOP
-            #send_to_agent(from_agent, reply, conversation_id, {
-            #            'path': current_path,
-            #            'source_agent': from_agent
-            #        })
-            
-            #return Message(
-            #    role=MessageRole.AGENT,
-            #    content=TextContent(text=reply),
-            #    parent_message_id=msg.message_id,
-            #    conversation_id=conversation_id
-            #)
             external_response = handle_external_message(user_text, conversation_id, msg, current_path)
             if external_response:
                 return external_response
