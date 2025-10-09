@@ -466,7 +466,7 @@ if not hasattr(A2AClient, 'send_message_threaded'):
 
 
 # Update handle_message to detect this special format
-def handle_external_message(msg_text, conversation_id, msg, current_path):
+def handle_external_message(msg_text, conversation_id, msg, current_path, system_prompt):
     """Handle specially formatted external messages"""
     try:
         # Parse the special message format
@@ -669,7 +669,8 @@ class AgentBridge(A2AServer):
         is_external = metadata.get('is_external', False)  # Check if this is an external message
         from_agent = metadata.get('from_agent_id', 'unknown')
         additional_context = metadata.get('additional_context', '')
-        
+        system_prompt = metadata.get('system_prompt', '')
+
         # Add current agent ID to the path
         agent_id = get_agent_id()
         current_path = path + ('>' if path else '') + agent_id
@@ -687,7 +688,7 @@ class AgentBridge(A2AServer):
 
         if user_text.startswith('__EXTERNAL_MESSAGE__'):
             print("--- External Message Detected ---")
-            external_response = handle_external_message(user_text, conversation_id, msg, current_path)
+            external_response = handle_external_message(user_text, conversation_id, msg, current_path, system_prompt)
             if external_response:
                 return external_response
         
