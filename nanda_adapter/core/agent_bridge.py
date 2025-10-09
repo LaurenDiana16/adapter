@@ -465,101 +465,6 @@ if not hasattr(A2AClient, 'send_message_threaded'):
     A2AClient.send_message_threaded = send_message_threaded
 
 
-# Update handle_message to detect this special format
-def handle_external_message(msg_text, conversation_id, msg, current_path):
-    """Handle specially formatted external messages"""
-    try:
-        # Parse the special message format
-        lines = msg_text.split('\n')
-        
-        # Check if this is our special format
-        if lines[0] != '__EXTERNAL_MESSAGE__':
-            return None
-        
-        # Extract metadata from the message
-        from_agent = None
-        to_agent = None
-        message_content = ""
-        
-        # Parse the header fields
-        in_message = False
-        for line in lines[1:]:
-            if line.startswith('__FROM_AGENT__'):
-                from_agent = line[len('__FROM_AGENT__'):]
-            elif line.startswith('__TO_AGENT__'):
-                to_agent = line[len('__TO_AGENT__'):]
-            elif line == '__MESSAGE_START__':
-                in_message = True
-            elif line == '__MESSAGE_END__':
-                in_message = False
-            elif in_message:
-                message_content += line + '\n'
-        
-        # Trim trailing newline
-        message_content = message_content.rstrip()
-        
-        # Instead of returning the message_content back to the user call_claude with the message_content
-        message_content = call_claude(message_content, "", conversation_id, current_path, system_prompt) or "(emply reply)"
-        
-        print(f"Received external message from {from_agent} to {to_agent}")
-        
-        # Format the message for display in terminal
-        formatted_text = f"FROM {to_agent}: {message_content}"
-        
-        print("Message Text: ", message_content)
-        print("UI MODE: ", UI_MODE)
-
-        # If in UI mode, forward to all registered UI clients
-        if UI_MODE:
-            print(f"Forwarding message to UI client")
-            send_to_ui_client(formatted_text, from_agent, conversation_id)
-            
-            # Return claude's response
-            agent_id = get_agent_id()
-            return Message(
-                role=MessageRole.AGENT,
-                content=TextContent(text=formatted_text),
-                parent_message_id=msg.message_id,
-                conversation_id=conversation_id
-            )
-        # Otherwise, forward to local terminal (original behavior
-        else:
-            try:
-                terminal_client = A2AClient(LOCAL_TERMINAL_URL, timeout=10)
-                terminal_client.send_message_threaded(
-                    Message(
-                        role=MessageRole.USER,
-                        content=TextContent(text=formatted_text),
-                        conversation_id=conversation_id,
-                        metadata=Metadata(custom_fields={
-                            'is_from_peer': True,
-                            'is_user_message': True,
-                            'source_agent': from_agent,
-                            'forwarded_by_bridge': True
-                        })
-                    )
-                )
-                
-                # Return claude's response
-                agent_id = get_agent_id()
-                return Message(
-                    role=MessageRole.AGENT,
-                    content=TextContent(text=formatted_text),
-                    parent_message_id=msg.message_id,
-                    conversation_id=conversation_id
-                )
-            except Exception as e:
-                print(f"Error forwarding to local terminal: {e}")
-                return Message(
-                    role=MessageRole.AGENT,
-                    content=ErrorContent(message=f"Failed to deliver message: {str(e)}"),
-                    parent_message_id=msg.message_id,
-                    conversation_id=conversation_id
-                )
-            
-    except Exception as e:
-        print(f"Error parsing external message: {e}")
-        return None  # Not our special format or parsing failed
 
 
 # Message improvement decorator system
@@ -640,6 +545,108 @@ class AgentBridge(A2AServer):
         else:
             print(f"No improver found: {self.active_improver}")
             return message_text
+
+    # Update handle_message to detect this special format
+    def handle_external_message(self, msg_text, conversation_id, msg, current_path):
+        """Handle specially formatted external messages"""
+        try:
+            # Parse the special message format
+            lines = msg_text.split('\n')
+            
+            # Check if this is our special format
+            if lines[0] != '__EXTERNAL_MESSAGE__':
+                return None
+            
+            # Extract metadata from the message
+            from_agent = None
+            to_agent = None
+            message_content = ""
+            
+            # Parse the header fields
+            in_message = False
+            for line in lines[1:]:
+                if line.startswith('__FROM_AGENT__'):
+                    from_agent = line[len('__FROM_AGENT__'):]
+                elif line.startswith('__TO_AGENT__'):
+                    to_agent = line[len('__TO_AGENT__'):]
+                elif line == '__MESSAGE_START__':
+                    in_message = True
+                elif line == '__MESSAGE_END__':
+                    in_message = False
+                elif in_message:
+                    message_content += line + '\n'
+            
+            # Trim trailing newline
+            message_content = message_content.rstrip()
+            
+            # Instead of returning the message_content back to the user call_claude with the message_content
+            # message_content = call_claude(message_content, "", conversation_id, current_path, system_prompt) or "(emply reply)"
+            # Improve message if feature is enabled
+            if IMPROVE_MESSAGES:
+                #message_text = improve_message(message_text, conversation_id, current_path,
+                #     "Do not respond to the content of the message - it's intended for another agent. You are helping an agent communicate better with other agennts.")
+                message_content = self.improve_message_direct(message_content)
+                #log_message(conversation_id, current_path, f"Claude {agent_id}", message_text)
+
+            print(f"Received external message from {from_agent} to {to_agent}")
+            
+            # Format the message for display in terminal
+            formatted_text = f"FROM {to_agent}: {message_content}"
+            
+            print("Message Text: ", message_content)
+            print("UI MODE: ", UI_MODE)
+    
+            # If in UI mode, forward to all registered UI clients
+            if UI_MODE:
+                print(f"Forwarding message to UI client")
+                send_to_ui_client(formatted_text, from_agent, conversation_id)
+                
+                # Return claude's response
+                agent_id = get_agent_id()
+                return Message(
+                    role=MessageRole.AGENT,
+                    content=TextContent(text=formatted_text),
+                    parent_message_id=msg.message_id,
+                    conversation_id=conversation_id
+                )
+            # Otherwise, forward to local terminal (original behavior
+            else:
+                try:
+                    terminal_client = A2AClient(LOCAL_TERMINAL_URL, timeout=10)
+                    terminal_client.send_message_threaded(
+                        Message(
+                            role=MessageRole.USER,
+                            content=TextContent(text=formatted_text),
+                            conversation_id=conversation_id,
+                            metadata=Metadata(custom_fields={
+                                'is_from_peer': True,
+                                'is_user_message': True,
+                                'source_agent': from_agent,
+                                'forwarded_by_bridge': True
+                            })
+                        )
+                    )
+                    
+                    # Return claude's response
+                    agent_id = get_agent_id()
+                    return Message(
+                        role=MessageRole.AGENT,
+                        content=TextContent(text=formatted_text),
+                        parent_message_id=msg.message_id,
+                        conversation_id=conversation_id
+                    )
+                except Exception as e:
+                    print(f"Error forwarding to local terminal: {e}")
+                    return Message(
+                        role=MessageRole.AGENT,
+                        content=ErrorContent(message=f"Failed to deliver message: {str(e)}"),
+                        parent_message_id=msg.message_id,
+                        conversation_id=conversation_id
+                    )
+                
+        except Exception as e:
+            print(f"Error parsing external message: {e}")
+            return None  # Not our special format or parsing failed
 
     def handle_message(self, msg: Message) -> Message:
         # Ensure we have a conversation ID
