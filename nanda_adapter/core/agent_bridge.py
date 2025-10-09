@@ -499,9 +499,7 @@ def handle_external_message(msg_text, conversation_id, msg, current_path):
         message_content = message_content.rstrip()
         
         # Instead of returning the message_content back to the user call_claude with the message_content
-        message_content = self.improve_message_direct(message_content)
-        log_message(conversation_id, current_path, f"Claude {agent_id}", message_content)
-        #message_content = call_claude(message_content, "", conversation_id, current_path, system_prompt) or "(emply reply)"
+        message_content = call_claude(message_content, "", conversation_id, current_path, system_prompt) or "(emply reply)"
         
         print(f"Received external message from {from_agent} to {to_agent}")
         
