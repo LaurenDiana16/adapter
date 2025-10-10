@@ -1,4 +1,22 @@
-## Functions changed to get adapter A2A messaging working
+## Demonstration of A2A messaging w/improvements working
+
+The aerospace engineering non-expert agent was created using the following command:
+```
+nohup python3 demo/langchain_aenon_agent.py > out.log 2>&1 &
+```
+
+The aerospace engineering expert agent was created using the following command:
+```
+nohup python3 demo/langchain_ae_agent.py > out.log 2>&1 &
+```
+
+A message sent to the aerospace engineering expert agent asking about airfoil theory.
+<img width="639" height="551" alt="Screenshot 2025-10-09 at 8 22 23 PM" src="https://github.com/user-attachments/assets/87b1ba62-4cbf-41a3-b6ed-ff8f325607fd" />
+
+A message sent from the aerospace engineering expert agent to the aerospace engineering non-expert agent asking about airfoil theory.
+<img width="649" height="319" alt="Screenshot 2025-10-09 at 8 22 12 PM" src="https://github.com/user-attachments/assets/488b1e8f-2b6e-46ee-b360-9b789900e984" />
+
+## Functions in adapter/nanda_adapter/core/agent_bridge.py changed to get A2A messaging w/improvements working
 
 1.  send_to_agent:
 ```
@@ -24,7 +42,9 @@ else:
 ```
 
 2. handle_message:
+
 ```
+# This has changed to remove the improvement function call here and instead send the message directly to the target agent and return the result to the user 
 else:
     # Message from local terminal user
     log_message(conversation_id, current_path, f"Local user to Agent {agent_id}", user_text)
@@ -37,15 +57,6 @@ else:
             target_agent = parts[0][1:]  # Remove the @ symbol
             message_text = parts[1]
 
-            # Improve message if feature is enabled
-            if IMPROVE_MESSAGES:
-                message_text = improve_message(message_text, conversation_id, current_path,
-                     "Do not respond to the content of the message - it's intended for another agent. You are helping an agent communicate better with other agennts.")
-                message_text = self.improve_message_direct(message_text)
-                log_message(conversation_id, current_path, f"Claude {agent_id}", message_text)
-
-            print(f"#jinu - Target agent: {target_agent}")
-            print(f"#jinu - Imoproved message text: {message_text}")
             # Send to the target agent's bridge
             result = send_to_agent(target_agent, message_text, conversation_id, {
                 'path': current_path,
@@ -63,13 +74,16 @@ else:
 
 3. handle_external_message:
 ```
-# This has changed to also take in current_path as a parameter
-def handle_external_message(msg_text, conversation_id, msg, current_path):
+# This was changed to be an instance method and take in current_path as a parameter
+def handle_external_message(self, msg_text, conversation_id, msg, current_path):
 ```
 
 ```
-# This has changed to call claude with the message_content
-message_content = call_claude(message_content, "", conversation_id, current_path) or "(emply reply)"
+# This has changed to call the claude improvement function on the received message_content
+message_content = message_content.rstrip()
+if IMPROVE_MESSAGES:
+    message_content = self.improve_message_direct(message_content)
+formatted_text = f"FROM {to_agent}: {message_content}"
 ```
 
 ```
