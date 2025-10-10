@@ -591,7 +591,7 @@ class AgentBridge(A2AServer):
             print(f"Received external message from {from_agent} to {to_agent}")
             
             # Format the message for display in terminal
-            formatted_text = f"@{from_agent}: {message_content}"
+            formatted_text = f"FROM {to_agent}: {message_content}"
             
             print("Message Text: ", message_content)
             print("UI MODE: ", UI_MODE)
