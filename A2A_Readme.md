@@ -10,11 +10,11 @@ The aerospace engineering expert agent was created using the following command:
 nohup python3 demo/langchain_ae_agent.py > out.log 2>&1 &
 ```
 
-A message sent from the aerospace engineering non-expert agent to the aerospace engineering expert agent asking about airfoil theory.
-![Alt text](images/ae_agent.png)
+A message sent to the aerospace engineering expert agent asking about airfoil theory.
+<img width="639" height="551" alt="Screenshot 2025-10-09 at 8 22 23 PM" src="https://github.com/user-attachments/assets/87b1ba62-4cbf-41a3-b6ed-ff8f325607fd" />
 
 A message sent from the aerospace engineering expert agent to the aerospace engineering non-expert agent asking about airfoil theory.
-![Alt text](images/aenon_agent.png)
+<img width="649" height="319" alt="Screenshot 2025-10-09 at 8 22 12 PM" src="https://github.com/user-attachments/assets/488b1e8f-2b6e-46ee-b360-9b789900e984" />
 
 ## Functions in adapter/nanda_adapter/core/agent_bridge.py changed to get A2A messaging w/improvements working
 
