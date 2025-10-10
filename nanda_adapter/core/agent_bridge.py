@@ -694,7 +694,7 @@ class AgentBridge(A2AServer):
 
         if user_text.startswith('__EXTERNAL_MESSAGE__'):
             print("--- External Message Detected ---")
-            external_response = handle_external_message(user_text, conversation_id, msg, current_path)
+            external_response = self.handle_external_message(user_text, conversation_id, msg, current_path)
             if external_response:
                 return external_response
         
