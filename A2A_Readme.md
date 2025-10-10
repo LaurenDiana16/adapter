@@ -1,3 +1,21 @@
+## Demonstration of A2A messaging w/improvements working
+
+The aerospace engineering non-expert agent was created using the following command:
+```
+nohup python3 demo/langchain_aenon_agent.py > out.log 2>&1 &
+```
+
+The aerospace engineering expert agent was created using the following command:
+```
+nohup python3 demo/langchain_ae_agent.py > out.log 2>&1 &
+```
+
+A message sent from the aerospace engineering non-expert agent to the aerospace engineering expert agent asking about airfoil theory.
+![Alt text](images/ae_agent.png)
+
+A message sent from the aerospace engineering expert agent to the aerospace engineering non-expert agent asking about airfoil theory.
+![Alt text](images/aenon_agent.png)
+
 ## Functions in adapter/nanda_adapter/core/agent_bridge.py changed to get A2A messaging w/improvements working
 
 1.  send_to_agent:
