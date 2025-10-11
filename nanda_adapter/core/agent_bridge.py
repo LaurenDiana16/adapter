@@ -16,6 +16,7 @@ from python_a2a import (
 import asyncio
 from mcp_utils import MCPClient
 import base64
+from find_certifier_prompt_for_skill import find_certifier_prompt_for_skill
 
 import sys
 sys.stdout.reconfigure(line_buffering=True)
@@ -841,13 +842,14 @@ class AgentBridge(A2AServer):
 
                     # Use the skill to look up the test prompt and certifier prompt
                     skill = parts[2]
-
+                    message_text = find_certifier_prompt_for_skill(skill)
+                    
                     # Test prompt
-                    message_text = "Please provide answers to the following 3 questions. \
-                    1. Can you explain airfoil theory? \
-                    2. What specialized tools are being used in the field right now? \
-                    3. What are some industry standards and practices? \
-                    "
+                    #message_text = "Please provide answers to the following 3 questions. \
+                    #1. Can you explain airfoil theory? \
+                    #2. What specialized tools are being used in the field right now? \
+                    #3. What are some industry standards and practices? \
+                    #"
 
                     # Send the test prompt to target agent
                     result = send_to_agent(target_agent, message_text, conversation_id, {
