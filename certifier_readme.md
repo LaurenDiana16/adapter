@@ -17,10 +17,8 @@ result = send_to_agent(target_agent, message_text, conversation_id, {
         'source_agent': agent_id
         })
 ```
-You can see the response message in the target agent's out.log file and it is displayed in the UI.
+You can see the response message in the target agent's out.log file. It is not displayed in the UI currently but we could add it there if we want to see the full chain of conversation.
 <img width="975" height="650" alt="Screenshot 2025-10-11 at 11 02 43 AM" src="https://github.com/user-attachments/assets/ddbcb3ff-4b7b-41d1-aa10-7294505d63bb" />
-
-
 
 3. The target agent's response is then passed to a certifier agent. Currently, the certifier agent is created inline using call_claude and a system_prompt. Ideally, the certifier agent would be running already externally and the response would be send across the A2A bridge to the certifier agent.
 ```
@@ -31,10 +29,12 @@ claude_response = call_claude(result, additional_context, conversation_id, curre
                     and output a PASS or FAIL.\
                     ")
 ```
-You can see the certifier's response message in the sender agent's out.log file. The intermediary step of the expert's response is not in the UI but we could add it there as well.
+You can see the certifier's response message in the sender agent's out.log file.
 <img width="967" height="244" alt="Screenshot 2025-10-11 at 11 03 27 AM" src="https://github.com/user-attachments/assets/b3daa852-e5f6-4c02-af36-f5ca7a38e999" />
 
+The certifier's response message is also displayed in the UI with a PASS/FAIL and reasoning.
 <img width="1280" height="820" alt="Screenshot 2025-10-11 at 11 01 41 AM" src="https://github.com/user-attachments/assets/f2f7ebc0-c066-4d08-8354-0f56c6640d49" />
+
 ## Next steps
 1. Move the test prompts to a MongoDB database and use a query to call them in
 2. Move the certifier agents to run externally
