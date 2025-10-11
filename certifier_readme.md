@@ -20,7 +20,7 @@ result = send_to_agent(target_agent, message_text, conversation_id, {
 You can see the response message in the target agent's out.log file. It is not displayed in the UI currently but we could add it there if we want to see the full chain of conversation.
 <img width="975" height="650" alt="Screenshot 2025-10-11 at 11 02 43 AM" src="https://github.com/user-attachments/assets/ddbcb3ff-4b7b-41d1-aa10-7294505d63bb" />
 
-3. The target agent's response is then passed to a certifier agent. Currently, the certifier agent is created inline using call_claude and a system_prompt. Ideally, the certifier agent would be running already externally and the response would be send across the A2A bridge to the certifier agent.
+3. The target agent's response is then passed to a certifier agent. Currently, the certifier agent is created inline using call_claude and a system_prompt. Ideally, the certifier agent would be running externally and the response would be sent across the A2A bridge to the certifier agent.
 ```
 # Send target agent's response to certifier agent
 claude_response = call_claude(result, additional_context, conversation_id, current_path,
