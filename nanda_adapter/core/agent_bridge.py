@@ -857,12 +857,19 @@ class AgentBridge(A2AServer):
                         'source_agent': agent_id
                     })
 
+                    # Send to certifier agent
+                    target_agent = 'agents756722'
+                    claude_response = send_to_agent(target_agent, result, conversation_id, {
+                        'path': current_path,
+                        'source_agent': target_agent
+                    })
+
                     # Send target agent's response to certifier agent
-                    claude_response = call_claude(result, additional_context, conversation_id, current_path,
-                    "You are a highly skilled AI assistant certified in aerospace engineering. \
-                    Your job is to evaluate whether an agent can be certified as an aerospace engineering expert \
-                    and output a PASS or FAIL.\
-                    ")
+                    #claude_response = call_claude(result, additional_context, conversation_id, current_path,
+                    #"You are a highly skilled AI assistant certified in aerospace engineering. \
+                    #Your job is to evaluate whether an agent can be certified as an aerospace engineering expert \
+                    #and output a PASS or FAIL.\
+                    #")
 
                     # Make sure we have a valid response
                     if not claude_response:
