@@ -5,8 +5,9 @@ This implementation adds /certify as a special command to adapter/nanda_adapter/
 export MONGODB_CONNECTION_STRING=<your-connection-string>
 ```
 
-1. From the UI, issue /certify @<agent-to-certify> <skill-to-certify> as a command
+1. Make sure the agent you wish to certify is running, from the UI associated with that agent or another agent, issue the following command
 ```
+# certify agents123 in aerospace_engineering
 /certify @agents123 aerospace_engineering
 ```
 
