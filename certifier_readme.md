@@ -1,9 +1,15 @@
 ## Certifier agent for skill
 
-1. Added /certify as a command to adapter/nanda_adapter/core/agent_bridge.py, example usage is as follows
+This implementation adds /certify as a special command to adapter/nanda_adapter/core/agent_bridge.py. For each skill (currently only supports aerospace engineering, systems engineering, and safety and risk management), the certify test prompts have been stored in a MongoDB database. Additionally, the agent names for the certifier agents for the 3 skills have been stored in a MongoDB database. Before running the /certify command a user has to export the MongoDB credentials needed to look up the test prompts and certifier agent names.
+```
+export MONGODB_CONNECTION_STRING=<your-connection-string>
+```
+
+1. From the UI, issue /certify @<agent-to-certify> <skill-to-certify> as a command
 ```
 /certify @agents123 aerospace_engineering
 ```
+
 2. The skill test prompts are stored in a MongoDB database and a query is used to retrieve the test prompt for the specified skill. The test prompt is sent to the agent being certified.
 ```
 # Get the target agent to certify
@@ -26,7 +32,7 @@ You can see the response message in the target agent's out.log file. It is not d
 3. The target agent's response is then passed to a certifier agent. The certifier agents are already running and a MongoDB database is used to look up the agent name for the certifier for the specified skill.
 ```
 # Send target agent's response to certifier agent
-certifier_agent = 'agents619762'
+certifier_agent = 'agents619762' # replace this with a query to MongoDB database
 claude_response = send_to_agent(certifier_agent, result, conversation_id, {
     'path': current_path,
     'source_agent': target_agent
