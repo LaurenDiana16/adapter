@@ -4,13 +4,16 @@
 ```
 /certify @agents123 aerospace_engineering
 ```
-2. Currently, the test prompt for aerospace_engineering is hardcoded, this would be moved to a MongoDB database and a query would be used to retrieve the test prompt for the specified skill. The test prompt is sent to the agent being certified.
+2. The skill test prompts are stored in a MongoDB database and a query is used to retrieve the test prompt for the specified skill. The test prompt is sent to the agent being certified.
 ```
-message_text = "Please provide answers to the following 3 questions. \
-                    1. Can you explain airfoil theory? \
-                    2. What specialized tools are being used in the field right now? \
-                    3. What are some industry standards and practices? \
-                    "
+# Get the target agent to certify
+parts = user_text.split(" ")
+target_agent = parts[1][1:]
+
+# Use the skill to look up the test prompt and certifier prompt
+skill = parts[2]
+message_text = find_certifier_prompt_for_skill(skill)
+
 # Send the test prompt to target agent
 result = send_to_agent(target_agent, message_text, conversation_id, {
         'path': current_path,
@@ -18,23 +21,22 @@ result = send_to_agent(target_agent, message_text, conversation_id, {
         })
 ```
 You can see the response message in the target agent's out.log file. It is not displayed in the UI currently but we could add it there if we want to see the full chain of conversation.
-<img width="975" height="650" alt="Screenshot 2025-10-11 at 11 02 43 AM" src="https://github.com/user-attachments/assets/ddbcb3ff-4b7b-41d1-aa10-7294505d63bb" />
+<img width="983" height="664" alt="Screenshot 2025-10-13 at 10 59 16 AM" src="https://github.com/user-attachments/assets/4dce1c01-7c39-4f8e-8a02-3d48dd82060e" />
 
-3. The target agent's response is then passed to a certifier agent. Currently, the certifier agent is created inline using call_claude and a system_prompt. Ideally, the certifier agent would be running externally and the response would be sent across the A2A bridge to the certifier agent.
+3. The target agent's response is then passed to a certifier agent. The certifier agents are already running and a MongoDB database is used to look up the agent name for the certifier for the specified skill.
 ```
 # Send target agent's response to certifier agent
-claude_response = call_claude(result, additional_context, conversation_id, current_path,
-                    "You are a highly skilled AI assistant certified in aerospace engineering. \
-                    Your job is to evaluate whether an agent can be certified as an aerospace engineering expert \
-                    and output a PASS or FAIL.\
-                    ")
+certifier_agent = 'agents619762'
+claude_response = send_to_agent(certifier_agent, result, conversation_id, {
+    'path': current_path,
+    'source_agent': target_agent
+})
 ```
 You can see the certifier's response message in the sender agent's out.log file.
-<img width="967" height="244" alt="Screenshot 2025-10-11 at 11 03 27 AM" src="https://github.com/user-attachments/assets/b3daa852-e5f6-4c02-af36-f5ca7a38e999" />
+<img width="972" height="307" alt="Screenshot 2025-10-13 at 10 59 56 AM" src="https://github.com/user-attachments/assets/5c102fc0-4562-449b-a01a-40614d855cb1" />
 
 The certifier's response message is also displayed in the UI with a PASS/FAIL and reasoning.
-<img width="1280" height="820" alt="Screenshot 2025-10-11 at 11 01 41 AM" src="https://github.com/user-attachments/assets/f2f7ebc0-c066-4d08-8354-0f56c6640d49" />
+<img width="933" height="901" alt="Screenshot 2025-10-13 at 10 58 14 AM" src="https://github.com/user-attachments/assets/9d3b4540-8a3d-4139-9457-0110db30659d" />
 
 ## Next steps
-1. Move the test prompts to a MongoDB database and use a query to call them in
-2. Move the certifier agents to run externally
+1. Remove the hardcoded agent name for the certifier agent and have it queried from a MongoDB database
