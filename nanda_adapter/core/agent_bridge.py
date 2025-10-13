@@ -858,7 +858,7 @@ class AgentBridge(A2AServer):
                     })
 
                     # Send to certifier agent
-                    target_agent = 'agents756722'
+                    target_agent = 'agents619762'
                     claude_response = send_to_agent(target_agent, result, conversation_id, {
                         'path': current_path,
                         'source_agent': target_agent
