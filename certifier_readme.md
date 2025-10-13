@@ -1,6 +1,6 @@
 ## Certifier agent for skill
 
-1. Added /certify as a command, example usage is as follows
+1. Added /certify as a command to adapter/nanda_adapter/core/agent_bridge.py, example usage is as follows
 ```
 /certify @agents123 aerospace_engineering
 ```
