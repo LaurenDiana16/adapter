@@ -16,7 +16,8 @@ from python_a2a import (
 import asyncio
 from mcp_utils import MCPClient
 import base64
-from find_certifier_prompt_for_skill import find_certifier_prompt_for_skill
+from query_mongodb_certifier import find_certifier_agent_for_skill, find_certifier_prompt_for_skill
+
 
 import sys
 sys.stdout.reconfigure(line_buffering=True)
@@ -839,37 +840,21 @@ class AgentBridge(A2AServer):
                     # Get the target agent to certify
                     parts = user_text.split(" ")
                     target_agent = parts[1][1:]
-
-                    # Use the skill to look up the test prompt and certifier prompt
                     skill = parts[2]
-                    message_text = find_certifier_prompt_for_skill(skill)
-                    
-                    # Test prompt
-                    #message_text = "Please provide answers to the following 3 questions. \
-                    #1. Can you explain airfoil theory? \
-                    #2. What specialized tools are being used in the field right now? \
-                    #3. What are some industry standards and practices? \
-                    #"
 
                     # Send the test prompt to target agent
+                    message_text = find_certifier_prompt_for_skill(skill)
                     result = send_to_agent(target_agent, message_text, conversation_id, {
                         'path': current_path,
                         'source_agent': agent_id
                     })
 
-                    # Send to certifier agent
-                    target_agent = 'agents619762'
-                    claude_response = send_to_agent(target_agent, result, conversation_id, {
+                    # Send target agent's response to certifier agent
+                    certifier_agent = find_certifier_agent_for_skill(skill)
+                    claude_response = send_to_agent(certifier_agent, result, conversation_id, {
                         'path': current_path,
                         'source_agent': target_agent
                     })
-
-                    # Send target agent's response to certifier agent
-                    #claude_response = call_claude(result, additional_context, conversation_id, current_path,
-                    #"You are a highly skilled AI assistant certified in aerospace engineering. \
-                    #Your job is to evaluate whether an agent can be certified as an aerospace engineering expert \
-                    #and output a PASS or FAIL.\
-                    #")
 
                     # Make sure we have a valid response
                     if not claude_response:
