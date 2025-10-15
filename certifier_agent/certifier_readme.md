@@ -17,7 +17,14 @@ nohup python3 demo/langchain_ae_agent.py > out.log 2>&1 &
 # certify agents945000 in aerospace_engineering
 /certify @agents945000 aerospace_engineering
 ```
-3. The skill test prompts are stored in a MongoDB database and a query is used to retrieve the test prompt for the specified skill. The test prompt is sent to the agent being certified.
+3. The skill test prompts are stored in a MongoDB database and a query is used to retrieve the test prompt for the specified skill. The test prompt is sent to the agent being certified. The test prompt for aerospace_engineering asks the following 3 questions.
+```
+Please provide answers to the following 3 questions.
+1. Can you explain airfoil theory?
+2. What specialized tools are being used in the field right now?
+3. What are some industry standards and practices?
+```
+Here is the updated code under the /certify special command.
 ```
 # Get the target agent to certify
 parts = user_text.split(" ")
