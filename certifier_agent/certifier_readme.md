@@ -7,13 +7,17 @@ Before running the /certify command a user has to export the MongoDB credentials
 export MONGODB_CONNECTION_STRING=<your-connection-string>
 ```
 
-1. Make sure the agent you wish to certify is running, and from the UI associated with that agent or another agent, issue the following command.
+1. Make sure the agent you wish to certify is running. For demonstration purposes, agents945000 was created as an aerospace engineering expert by issuing the following commands from this repo.
+```
+cd adapter/nanda_adapter/examples
+nohup python3 demo/langchain_ae_agent.py > out.log 2>&1 &
+```
+2.  From the UI associated with that agent or another agent, issue the following command to certify that agent.
 ```
 # certify agents945000 in aerospace_engineering
 /certify @agents945000 aerospace_engineering
 ```
-
-2. The skill test prompts are stored in a MongoDB database and a query is used to retrieve the test prompt for the specified skill. The test prompt is sent to the agent being certified.
+3. The skill test prompts are stored in a MongoDB database and a query is used to retrieve the test prompt for the specified skill. The test prompt is sent to the agent being certified.
 ```
 # Get the target agent to certify
 parts = user_text.split(" ")
@@ -32,7 +36,7 @@ result = send_to_agent(target_agent, message_text, conversation_id, {
 You can see the target agent's response message in the sender agent's out.log file. It is not displayed in the UI currently but we could add it there if we want to see the full chain of conversation.
 <img width="1001" height="588" alt="Screenshot 2025-10-13 at 12 11 19 PM" src="https://github.com/user-attachments/assets/ae8c20bf-5b5e-4bc1-bb2e-cf79cc2c30de" />
 
-3. The target agent's response is then passed to a certifier agent. The certifier agents are already running and a MongoDB database is used to look up the agent name for the certifier for the specified skill.
+4. The target agent's response is then passed to a certifier agent. The certifier agents are already running and a MongoDB database is used to look up the agent name for the certifier for the specified skill.
 ```
 # Send target agent's response to certifier agent
 certifier_agent = find_certifier_agent_for_skill(skill)
